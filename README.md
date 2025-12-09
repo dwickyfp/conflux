@@ -1,119 +1,90 @@
 # Conflux
 
-Admin Dashboard UI crafted with Shadcn and Vite. Built with responsiveness and accessibility in mind.
+**A unified real-time data orchestration platform connecting Postgres, Kafka, RisingWave, and Snowflake. Seamless CDC pipelines powered by Sequin.**
 
-![alt text](public/images/shadcn-admin.png)
-
-[![Sponsored by Clerk](https://img.shields.io/badge/Sponsored%20by-Clerk-5b6ee1?logo=clerk)](https://go.clerk.com/GttUAaK)
-
-I've been creating dashboard UIs at work and for my personal projects. I always wanted to make a reusable collection of dashboard UI for future projects; and here it is now. While I've created a few custom components, some of the code is directly adapted from ShadcnUI examples.
-
-> This is not a starter project (template) though. I'll probably make one in the future.
+Conflux simplifies the complexity of building real-time data pipelines. It provides an admin dashboard to manage and monitor your Change Data Capture (CDC) flows, ensuring data consistency and low latency across your data infrastructure.
 
 ## Features
 
-- Light/dark mode
-- Responsive
-- Accessible
-- With built-in Sidebar component
-- Global search command
-- 10+ pages
-- Extra custom components
-- RTL support
-
-<details>
-<summary>Customized Components (click to expand)</summary>
-
-This project uses Shadcn UI components, but some have been slightly modified for better RTL (Right-to-Left) support and other improvements. These customized components differ from the original Shadcn UI versions.
-
-If you want to update components using the Shadcn CLI (e.g., `npx shadcn@latest add <component>`), it's generally safe for non-customized components. For the listed customized ones, you may need to manually merge changes to preserve the project's modifications and avoid overwriting RTL support or other updates.
-
-> If you don't require RTL support, you can safely update the 'RTL Updated Components' via the Shadcn CLI, as these changes are primarily for RTL compatibility. The 'Modified Components' may have other customizations to consider.
-
-### Modified Components
-
-- scroll-area
-- sonner
-- separator
-
-### RTL Updated Components
-
-- alert-dialog
-- calendar
-- command
-- dialog
-- dropdown-menu
-- select
-- table
-- sheet
-- sidebar
-- switch
-
-**Notes:**
-
-- **Modified Components**: These have general updates, potentially including RTL adjustments.
-- **RTL Updated Components**: These have specific changes for RTL language support (e.g., layout, positioning).
-- For implementation details, check the source files in `src/components/ui/`.
-- All other Shadcn UI components in the project are standard and can be safely updated via the CLI.
-
-</details>
+- **Real-time Data Orchestration**: seamlessly connect Postgres to Kafka, Snowflake, and more.
+- **CDC Pipelines**: Powered by Sequin for reliable change data capture.
+- **Unified Dashboard**: Manage your streams, connectors, and schemas in one place.
+- **Observability**: Built-in monitoring with Grafana and Prometheus.
+- **Modern UI**: Dark/Light mode, responsive design, and accessible components.
 
 ## Tech Stack
 
-**UI:** [ShadcnUI](https://ui.shadcn.com) (TailwindCSS + RadixUI)
+Conflux is built with a modern stack emphasizing performance and type safety.
 
-**Build Tool:** [Vite](https://vitejs.dev/)
+### Frontend
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) & [Shadcn/UI](https://ui.shadcn.com/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Data Fetching**: [TanStack Query](https://tanstack.com/query/latest)
+- **Routing**: [TanStack Router](https://tanstack.com/router/latest)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
 
-**Routing:** [TanStack Router](https://tanstack.com/router/latest)
+### Backend
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.12+)
+- **Package Manager**: [uv](https://github.com/astral-sh/uv)
 
-**Type Checking:** [TypeScript](https://www.typescriptlang.org/)
+### Infrastructure (Docker)
+- **Kafka**: KRaft mode (no ZooKeeper)
+- **Sequin**: CDC engine
+- **Redis**: Caching and Sequin state
+- **Postgres**: Application DB and Source DB
+- **Grafana & Prometheus**: Monitoring
 
-**Linting/Formatting:** [ESLint](https://eslint.org/) & [Prettier](https://prettier.io/)
+## Getting Started
 
-**Icons:** [Lucide Icons](https://lucide.dev/icons/), [Tabler Icons](https://tabler.io/icons) (Brand icons only)
+Follow these steps to set up Conflux locally.
 
-**Auth (partial):** [Clerk](https://go.clerk.com/GttUAaK)
+### Prerequisites
+- Node.js & pnpm
+- Docker & Docker Compose
 
-## Run Locally
+### Installation
 
-Clone the project
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/conflux.git
+   cd conflux
+   ```
 
-```bash
-  git clone https://github.com/satnaing/shadcn-admin.git
-```
+2. **Start Infrastructure**
+   Spin up Kafka, Sequin, and other services.
+   ```bash
+   cd docker_engine
+   docker compose up -d
+   cd ..
+   ```
 
-Go to the project directory
+3. **Install Frontend Dependencies**
+   ```bash
+   pnpm install
+   ```
 
-```bash
-  cd shadcn-admin
-```
+4. **Start Development Server**
+   ```bash
+   pnpm run dev
+   ```
 
-Install dependencies
+   The app will be available at `http://localhost:5173`.
 
-```bash
-  pnpm install
-```
+## Architecture
 
-Start the server
+The `docker_engine` folder contains the definition for the following services:
 
-```bash
-  pnpm run dev
-```
-
-## Sponsoring this project ❤️
-
-If you find this project helpful or use this in your own work, consider [sponsoring me](https://github.com/sponsors/satnaing) to support development and maintenance. You can [buy me a coffee](https://buymeacoffee.com/satnaing) as well. Don’t worry, every penny helps. Thank you! 🙏
-
-For questions or sponsorship inquiries, feel free to reach out at [satnaingdev@gmail.com](mailto:satnaingdev@gmail.com).
-
-### Current Sponsor
-
-- [Clerk](https://go.clerk.com/GttUAaK) - authentication and user management for the modern web
-
-## Author
-
-Crafted with 🤍 by [@satnaing](https://github.com/satnaing)
+| Service | Port | Description |
+| :--- | :--- | :--- |
+| **Kafka** | `9092` | Event streaming platform (KRaft mode). |
+| **Kafka UI** | `9080` | Web UI for managing Kafka clusters. |
+| **Sequin** | `7376` | CDC orchestration engine. |
+| **Sequin Postgres** | `7377` | Internal database for Sequin. |
+| **Sequin Redis** | `7378` | internal Redis for Sequin. |
+| **Grafana** | `3000` | metrics visualization. |
 
 ## License
 
-Licensed under the [MIT License](https://choosealicense.com/licenses/mit/)
+Licensed under the [MIT License](LICENSE).

@@ -1,0 +1,29 @@
+[project]
+name = "etl-manager-backend"
+version = "0.1.0"
+description = "Backend for ETL Manager using FastAPI and Sequin"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.0",
+    "uvicorn>=0.30.0",
+    "sqlmodel>=0.0.22",
+    "pydantic-settings>=2.5.0",
+    "httpx>=0.27.0",
+    "apscheduler>=3.10.4",
+    "aiokafka>=0.11.0",
+    "python-multipart>=0.0.12",
+    "psycopg2-binary>=2.9.11",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

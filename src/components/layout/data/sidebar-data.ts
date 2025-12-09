@@ -21,6 +21,8 @@ import {
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
+  Database,
+  Archive,
 } from 'lucide-react'
 import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
@@ -157,6 +159,26 @@ export const sidebarData: SidebarData = {
               icon: Construction,
             },
           ],
+        },
+      ],
+    },
+    {
+      title: 'Sequin Manager',
+      items: [
+        {
+          title: 'Sinks',
+          url: '/sinks',
+          icon: Database,
+        },
+        {
+          title: 'Backfills',
+          url: '/backfills',
+          icon: Archive,
+        },
+        {
+          title: 'Configuration',
+          url: '/sequin-settings',
+          icon: Settings,
         },
       ],
     },

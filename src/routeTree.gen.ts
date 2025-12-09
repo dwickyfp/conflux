@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ClerkRouteRouteImport } from './routes/clerk/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -40,6 +42,16 @@ import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_a
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 
+const AuthenticatedSinksLazyRouteImport = createFileRoute(
+  '/_authenticated/sinks',
+)()
+const AuthenticatedSequinSettingsLazyRouteImport = createFileRoute(
+  '/_authenticated/sequin-settings',
+)()
+const AuthenticatedBackfillsLazyRouteImport = createFileRoute(
+  '/_authenticated/backfills',
+)()
+
 const ClerkRouteRoute = ClerkRouteRouteImport.update({
   id: '/clerk',
   path: '/clerk',
@@ -54,6 +66,29 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSinksLazyRoute = AuthenticatedSinksLazyRouteImport.update({
+  id: '/sinks',
+  path: '/sinks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any).lazy(() =>
+  import('./routes/_authenticated/sinks.lazy').then((d) => d.Route),
+)
+const AuthenticatedSequinSettingsLazyRoute =
+  AuthenticatedSequinSettingsLazyRouteImport.update({
+    id: '/sequin-settings',
+    path: '/sequin-settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/sequin-settings.lazy').then((d) => d.Route),
+  )
+const AuthenticatedBackfillsLazyRoute =
+  AuthenticatedBackfillsLazyRouteImport.update({
+    id: '/backfills',
+    path: '/backfills',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/backfills.lazy').then((d) => d.Route),
+  )
 const errors503Route = errors503RouteImport.update({
   id: '/(errors)/503',
   path: '/503',
@@ -210,6 +245,9 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/backfills': typeof AuthenticatedBackfillsLazyRoute
+  '/sequin-settings': typeof AuthenticatedSequinSettingsLazyRoute
+  '/sinks': typeof AuthenticatedSinksLazyRoute
   '/': typeof AuthenticatedIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
@@ -238,6 +276,9 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/backfills': typeof AuthenticatedBackfillsLazyRoute
+  '/sequin-settings': typeof AuthenticatedSequinSettingsLazyRoute
+  '/sinks': typeof AuthenticatedSinksLazyRoute
   '/': typeof AuthenticatedIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
@@ -271,6 +312,9 @@ export interface FileRoutesById {
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
+  '/_authenticated/backfills': typeof AuthenticatedBackfillsLazyRoute
+  '/_authenticated/sequin-settings': typeof AuthenticatedSequinSettingsLazyRoute
+  '/_authenticated/sinks': typeof AuthenticatedSinksLazyRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
@@ -302,6 +346,9 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/backfills'
+    | '/sequin-settings'
+    | '/sinks'
     | '/'
     | '/errors/$error'
     | '/settings/account'
@@ -330,6 +377,9 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/backfills'
+    | '/sequin-settings'
+    | '/sinks'
     | '/'
     | '/errors/$error'
     | '/settings/account'
@@ -362,6 +412,9 @@ export interface FileRouteTypes {
     | '/(errors)/404'
     | '/(errors)/500'
     | '/(errors)/503'
+    | '/_authenticated/backfills'
+    | '/_authenticated/sequin-settings'
+    | '/_authenticated/sinks'
     | '/_authenticated/'
     | '/_authenticated/errors/$error'
     | '/_authenticated/settings/account'
@@ -415,6 +468,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sinks': {
+      id: '/_authenticated/sinks'
+      path: '/sinks'
+      fullPath: '/sinks'
+      preLoaderRoute: typeof AuthenticatedSinksLazyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sequin-settings': {
+      id: '/_authenticated/sequin-settings'
+      path: '/sequin-settings'
+      fullPath: '/sequin-settings'
+      preLoaderRoute: typeof AuthenticatedSequinSettingsLazyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/backfills': {
+      id: '/_authenticated/backfills'
+      path: '/backfills'
+      fullPath: '/backfills'
+      preLoaderRoute: typeof AuthenticatedBackfillsLazyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/(errors)/503': {
@@ -634,6 +708,9 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
+  AuthenticatedBackfillsLazyRoute: typeof AuthenticatedBackfillsLazyRoute
+  AuthenticatedSequinSettingsLazyRoute: typeof AuthenticatedSequinSettingsLazyRoute
+  AuthenticatedSinksLazyRoute: typeof AuthenticatedSinksLazyRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
@@ -645,6 +722,9 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
+  AuthenticatedBackfillsLazyRoute: AuthenticatedBackfillsLazyRoute,
+  AuthenticatedSequinSettingsLazyRoute: AuthenticatedSequinSettingsLazyRoute,
+  AuthenticatedSinksLazyRoute: AuthenticatedSinksLazyRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,

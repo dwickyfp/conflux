@@ -11,33 +11,31 @@ services:
     container_name: kafka
     hostname: kafka
     restart: unless-stopped
+    user: root
     networks: [ etl-manager]
     ports:
-      - "9092:9092"      # akses dari luar VM: PLAINTEXT
+      - "9082:9092"      # akses dari luar VM: PLAINTEXT
     environment:
       # ====== KRaft (tanpa ZooKeeper) ======
-      KAFKA_KRAFT_CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk   # fixed; tidak perlu generate
-      KAFKA_CFG_NODE_ID: "1"
-      KAFKA_CFG_PROCESS_ROLES: controller,broker
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-
-      # ====== Listener ======
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://192.168.200.23:9092
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      ALLOW_PLAINTEXT_LISTENER: "yes"
-
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: controller,broker
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      
       # ====== Setting single-node yang aman/masuk akal ======
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
-      KAFKA_CFG_NUM_PARTITIONS: "3"
-      KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: "1"
-      KAFKA_CFG_MIN_INSYNC_REPLICAS: "1"
-      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
-      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
-      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: "1"
-      KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE: "false"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "false"
+
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
 
       # JVM (sesuaikan resource VM)
       KAFKA_HEAP_OPTS: -Xms1g -Xmx1g
@@ -45,9 +43,9 @@ services:
     ulimits:
       nofile: { soft: 100000, hard: 100000 }
     volumes:
-      - kafka-data:/bitnami/kafka
+      - kafka-data:/var/lib/kafka/data
     healthcheck:
-      test: ["CMD-SHELL", "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -57,7 +55,7 @@ services:
     container_name: kafka-ui-cluster
     image: provectuslabs/kafka-ui:latest
     ports:
-      - 9080:8080
+      - 9070:8080
     depends_on:
       - kafka
     environment:
@@ -151,7 +149,7 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - "9090:9090"
+      - "9080:9090"
     networks: [etl-manager]
 
   sequin_grafana:
@@ -167,29 +165,29 @@ services:
       - ./dashboard.json:/etc/grafana/dashboards/dashboards/sequin.json
     networks: [etl-manager]
 
-  # postgres-source:
-  #   image: postgres:17
-  #   container_name: postgres_cdc
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres # Ganti dengan password yang aman
-  #     POSTGRES_DB: postgres
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   # Command ini yang mengaktifkan fitur CDC
-  #   command: >
-  #     postgres 
-  #     -c wal_level=logical 
-  #     -c max_replication_slots=10 
-  #     -c max_wal_senders=10
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 5
-  #   networks: [etl-manager]
+  postgres-source:
+    image: postgres:17
+    container_name: postgres_cdc
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres # Ganti dengan password yang aman
+      POSTGRES_DB: postgres
+    ports:
+      - "5532:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Command ini yang mengaktifkan fitur CDC
+    command: >
+      postgres 
+      -c wal_level=logical 
+      -c max_replication_slots=10 
+      -c max_wal_senders=10
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks: [etl-manager]
 
 volumes:
   sequin_postgres_data:

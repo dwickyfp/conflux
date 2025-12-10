@@ -1,4 +1,4 @@
-## Generate RSA
+## Generate RSA 
 
 # Encrypted private key (recommended)
 openssl genrsa 2048 | openssl pkcs8 -topk8 -v2 aes256 -inform PEM -out rsa_key.p8

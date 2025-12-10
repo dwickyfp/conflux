@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ClerkRouteRouteImport } from './routes/clerk/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -34,11 +36,26 @@ import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authentica
 import { Route as ClerkAuthenticatedUserManagementRouteImport } from './routes/clerk/_authenticated/user-management'
 import { Route as ClerkauthSignUpRouteImport } from './routes/clerk/(auth)/sign-up'
 import { Route as ClerkauthSignInRouteImport } from './routes/clerk/(auth)/sign-in'
+import { Route as AuthenticatedSettingsSequinRouteImport } from './routes/_authenticated/settings/sequin'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
+import { Route as AuthenticatedSettingsKafkaRouteImport } from './routes/_authenticated/settings/kafka'
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+
+const AuthenticatedSinksLazyRouteImport = createFileRoute(
+  '/_authenticated/sinks',
+)()
+const AuthenticatedSequinSettingsLazyRouteImport = createFileRoute(
+  '/_authenticated/sequin-settings',
+)()
+const AuthenticatedSequinDatabasesLazyRouteImport = createFileRoute(
+  '/_authenticated/sequin-databases',
+)()
+const AuthenticatedBackfillsLazyRouteImport = createFileRoute(
+  '/_authenticated/backfills',
+)()
 
 const ClerkRouteRoute = ClerkRouteRouteImport.update({
   id: '/clerk',
@@ -54,6 +71,39 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSinksLazyRoute = AuthenticatedSinksLazyRouteImport.update({
+  id: '/sinks',
+  path: '/sinks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any).lazy(() =>
+  import('./routes/_authenticated/sinks.lazy').then((d) => d.Route),
+)
+const AuthenticatedSequinSettingsLazyRoute =
+  AuthenticatedSequinSettingsLazyRouteImport.update({
+    id: '/sequin-settings',
+    path: '/sequin-settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/sequin-settings.lazy').then((d) => d.Route),
+  )
+const AuthenticatedSequinDatabasesLazyRoute =
+  AuthenticatedSequinDatabasesLazyRouteImport.update({
+    id: '/sequin-databases',
+    path: '/sequin-databases',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/sequin-databases.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+const AuthenticatedBackfillsLazyRoute =
+  AuthenticatedBackfillsLazyRouteImport.update({
+    id: '/backfills',
+    path: '/backfills',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/backfills.lazy').then((d) => d.Route),
+  )
 const errors503Route = errors503RouteImport.update({
   id: '/(errors)/503',
   path: '/503',
@@ -166,10 +216,22 @@ const ClerkauthSignInRoute = ClerkauthSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => ClerkauthRouteRoute,
 } as any)
+const AuthenticatedSettingsSequinRoute =
+  AuthenticatedSettingsSequinRouteImport.update({
+    id: '/sequin',
+    path: '/sequin',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
 const AuthenticatedSettingsNotificationsRoute =
   AuthenticatedSettingsNotificationsRouteImport.update({
     id: '/notifications',
     path: '/notifications',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedSettingsKafkaRoute =
+  AuthenticatedSettingsKafkaRouteImport.update({
+    id: '/kafka',
+    path: '/kafka',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
 const AuthenticatedSettingsDisplayRoute =
@@ -210,12 +272,18 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/backfills': typeof AuthenticatedBackfillsLazyRoute
+  '/sequin-databases': typeof AuthenticatedSequinDatabasesLazyRoute
+  '/sequin-settings': typeof AuthenticatedSequinSettingsLazyRoute
+  '/sinks': typeof AuthenticatedSinksLazyRoute
   '/': typeof AuthenticatedIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
+  '/settings/kafka': typeof AuthenticatedSettingsKafkaRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/settings/sequin': typeof AuthenticatedSettingsSequinRoute
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
@@ -238,12 +306,18 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/backfills': typeof AuthenticatedBackfillsLazyRoute
+  '/sequin-databases': typeof AuthenticatedSequinDatabasesLazyRoute
+  '/sequin-settings': typeof AuthenticatedSequinSettingsLazyRoute
+  '/sinks': typeof AuthenticatedSinksLazyRoute
   '/': typeof AuthenticatedIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
+  '/settings/kafka': typeof AuthenticatedSettingsKafkaRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/settings/sequin': typeof AuthenticatedSettingsSequinRoute
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
@@ -271,12 +345,18 @@ export interface FileRoutesById {
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
+  '/_authenticated/backfills': typeof AuthenticatedBackfillsLazyRoute
+  '/_authenticated/sequin-databases': typeof AuthenticatedSequinDatabasesLazyRoute
+  '/_authenticated/sequin-settings': typeof AuthenticatedSequinSettingsLazyRoute
+  '/_authenticated/sinks': typeof AuthenticatedSinksLazyRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
+  '/_authenticated/settings/kafka': typeof AuthenticatedSettingsKafkaRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/_authenticated/settings/sequin': typeof AuthenticatedSettingsSequinRoute
   '/clerk/(auth)/sign-in': typeof ClerkauthSignInRoute
   '/clerk/(auth)/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/_authenticated/user-management': typeof ClerkAuthenticatedUserManagementRoute
@@ -302,12 +382,18 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/backfills'
+    | '/sequin-databases'
+    | '/sequin-settings'
+    | '/sinks'
     | '/'
     | '/errors/$error'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
+    | '/settings/kafka'
     | '/settings/notifications'
+    | '/settings/sequin'
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
@@ -330,12 +416,18 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/backfills'
+    | '/sequin-databases'
+    | '/sequin-settings'
+    | '/sinks'
     | '/'
     | '/errors/$error'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
+    | '/settings/kafka'
     | '/settings/notifications'
+    | '/settings/sequin'
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
@@ -362,12 +454,18 @@ export interface FileRouteTypes {
     | '/(errors)/404'
     | '/(errors)/500'
     | '/(errors)/503'
+    | '/_authenticated/backfills'
+    | '/_authenticated/sequin-databases'
+    | '/_authenticated/sequin-settings'
+    | '/_authenticated/sinks'
     | '/_authenticated/'
     | '/_authenticated/errors/$error'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
+    | '/_authenticated/settings/kafka'
     | '/_authenticated/settings/notifications'
+    | '/_authenticated/settings/sequin'
     | '/clerk/(auth)/sign-in'
     | '/clerk/(auth)/sign-up'
     | '/clerk/_authenticated/user-management'
@@ -415,6 +513,34 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sinks': {
+      id: '/_authenticated/sinks'
+      path: '/sinks'
+      fullPath: '/sinks'
+      preLoaderRoute: typeof AuthenticatedSinksLazyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sequin-settings': {
+      id: '/_authenticated/sequin-settings'
+      path: '/sequin-settings'
+      fullPath: '/sequin-settings'
+      preLoaderRoute: typeof AuthenticatedSequinSettingsLazyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sequin-databases': {
+      id: '/_authenticated/sequin-databases'
+      path: '/sequin-databases'
+      fullPath: '/sequin-databases'
+      preLoaderRoute: typeof AuthenticatedSequinDatabasesLazyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/backfills': {
+      id: '/_authenticated/backfills'
+      path: '/backfills'
+      fullPath: '/backfills'
+      preLoaderRoute: typeof AuthenticatedBackfillsLazyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/(errors)/503': {
@@ -571,11 +697,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClerkauthSignInRouteImport
       parentRoute: typeof ClerkauthRouteRoute
     }
+    '/_authenticated/settings/sequin': {
+      id: '/_authenticated/settings/sequin'
+      path: '/sequin'
+      fullPath: '/settings/sequin'
+      preLoaderRoute: typeof AuthenticatedSettingsSequinRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
     '/_authenticated/settings/notifications': {
       id: '/_authenticated/settings/notifications'
       path: '/notifications'
       fullPath: '/settings/notifications'
       preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/settings/kafka': {
+      id: '/_authenticated/settings/kafka'
+      path: '/kafka'
+      fullPath: '/settings/kafka'
+      preLoaderRoute: typeof AuthenticatedSettingsKafkaRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
     '/_authenticated/settings/display': {
@@ -613,7 +753,9 @@ interface AuthenticatedSettingsRouteRouteChildren {
   AuthenticatedSettingsAccountRoute: typeof AuthenticatedSettingsAccountRoute
   AuthenticatedSettingsAppearanceRoute: typeof AuthenticatedSettingsAppearanceRoute
   AuthenticatedSettingsDisplayRoute: typeof AuthenticatedSettingsDisplayRoute
+  AuthenticatedSettingsKafkaRoute: typeof AuthenticatedSettingsKafkaRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
+  AuthenticatedSettingsSequinRoute: typeof AuthenticatedSettingsSequinRoute
   AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
 }
 
@@ -622,8 +764,10 @@ const AuthenticatedSettingsRouteRouteChildren: AuthenticatedSettingsRouteRouteCh
     AuthenticatedSettingsAccountRoute: AuthenticatedSettingsAccountRoute,
     AuthenticatedSettingsAppearanceRoute: AuthenticatedSettingsAppearanceRoute,
     AuthenticatedSettingsDisplayRoute: AuthenticatedSettingsDisplayRoute,
+    AuthenticatedSettingsKafkaRoute: AuthenticatedSettingsKafkaRoute,
     AuthenticatedSettingsNotificationsRoute:
       AuthenticatedSettingsNotificationsRoute,
+    AuthenticatedSettingsSequinRoute: AuthenticatedSettingsSequinRoute,
     AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
   }
 
@@ -634,6 +778,10 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
+  AuthenticatedBackfillsLazyRoute: typeof AuthenticatedBackfillsLazyRoute
+  AuthenticatedSequinDatabasesLazyRoute: typeof AuthenticatedSequinDatabasesLazyRoute
+  AuthenticatedSequinSettingsLazyRoute: typeof AuthenticatedSequinSettingsLazyRoute
+  AuthenticatedSinksLazyRoute: typeof AuthenticatedSinksLazyRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
@@ -645,6 +793,10 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
+  AuthenticatedBackfillsLazyRoute: AuthenticatedBackfillsLazyRoute,
+  AuthenticatedSequinDatabasesLazyRoute: AuthenticatedSequinDatabasesLazyRoute,
+  AuthenticatedSequinSettingsLazyRoute: AuthenticatedSequinSettingsLazyRoute,
+  AuthenticatedSinksLazyRoute: AuthenticatedSinksLazyRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,

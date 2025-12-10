@@ -21,6 +21,10 @@ import {
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
+  Database,
+  Archive,
+  Activity,
+  Waypoints,
 } from 'lucide-react'
 import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
@@ -33,9 +37,9 @@ export const sidebarData: SidebarData = {
   },
   teams: [
     {
-      name: 'Shadcn Admin',
+      name: 'Conflux',
       logo: Command,
-      plan: 'Vite + ShadcnUI',
+      plan: 'Unified Data Platform',
     },
     {
       name: 'Acme Inc',
@@ -161,6 +165,26 @@ export const sidebarData: SidebarData = {
       ],
     },
     {
+      title: 'Sequin Manager',
+      items: [
+        {
+            title: 'Databases',
+            url: '/sequin-databases',
+            icon: Database,
+        },
+        {
+          title: 'Sinks',
+          url: '/sinks',
+          icon: Waypoints,
+        },
+        {
+          title: 'Backfills',
+          url: '/backfills',
+          icon: Archive,
+        },
+      ],
+    },
+    {
       title: 'Other',
       items: [
         {
@@ -191,6 +215,16 @@ export const sidebarData: SidebarData = {
               title: 'Display',
               url: '/settings/display',
               icon: Monitor,
+            },
+            {
+              title: 'Sequin',
+              url: '/settings/sequin',
+              icon: Database,
+            },
+            {
+              title: 'Kafka',
+              url: '/settings/kafka',
+              icon: Activity,
             },
           ],
         },

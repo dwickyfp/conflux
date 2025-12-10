@@ -58,7 +58,7 @@ class SequinService:
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(
-                    self._get_url("/api/postgres_databases"),
+                    self._get_url("/api/postgres_databases?show_sensitive=true"),
                     headers=self._get_headers()
                 )
                 response.raise_for_status()

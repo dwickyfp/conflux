@@ -39,7 +39,7 @@ export const sidebarData: SidebarData = {
     {
       name: 'Conflux',
       logo: Command,
-      plan: 'Vite + ShadcnUI',
+      plan: 'Unified Data Platform',
     },
     {
       name: 'Acme Inc',

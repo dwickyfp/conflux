@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { settingsApi } from '@/features/sequin/api/settings';
 import { Activity, Power, PowerOff } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 export function SequinStatusCard() {
     const [isConnected, setIsConnected] = useState<boolean | null>(null);
+    const [lastChecked, setLastChecked] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -12,6 +14,9 @@ export function SequinStatusCard() {
             try {
                 const result = await settingsApi.testConnection();
                 setIsConnected(result.connected);
+                if (result.checked_at) {
+                    setLastChecked(result.checked_at);
+                }
             } catch (error) {
                 setIsConnected(false);
             } finally {
@@ -48,6 +53,11 @@ export function SequinStatusCard() {
                             Check your settings configuration
                         </p>
                     </>
+                )}
+                {lastChecked && (
+                     <p className="text-xs text-muted-foreground mt-2">
+                        Last checked: {formatDistanceToNow(new Date(lastChecked), { addSuffix: true })}
+                    </p>
                 )}
             </CardContent>
         </Card>

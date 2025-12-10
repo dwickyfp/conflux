@@ -15,4 +15,8 @@ export const settingsApi = {
         const response = await axios.post(`${API_URL}/settings/test-connection`);
         return response.data;
     },
+    testKafka: async () => {
+        const response = await axios.post(`${API_URL}/settings/test-kafka`);
+        return response.data;
+    },
 };

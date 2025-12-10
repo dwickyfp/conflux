@@ -1,5 +1,11 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { BackfillList } from '@/features/sequin/components/BackfillList'
+import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { Search } from '@/components/search'
+import { ThemeSwitch } from '@/components/theme-switch'
+import { ConfigDrawer } from '@/components/config-drawer'
 
 export const Route = createLazyFileRoute('/_authenticated/backfills')({
     component: BackfillsPage,
@@ -7,11 +13,21 @@ export const Route = createLazyFileRoute('/_authenticated/backfills')({
 
 function BackfillsPage() {
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Backfills</h1>
-            </div>
-            <BackfillList />
-        </div>
+        <>
+            <Header>
+                <Search />
+                <div className='ms-auto flex items-center space-x-4'>
+                    <ThemeSwitch />
+                    <ConfigDrawer />
+                    <ProfileDropdown />
+                </div>
+            </Header>
+            <Main>
+                <div className="mb-2 flex items-center justify-between space-y-2">
+                    <h1 className="text-2xl font-bold tracking-tight">Backfills</h1>
+                </div>
+                <BackfillList />
+            </Main>
+        </>
     )
 }

@@ -23,7 +23,7 @@ This guide explains how to set up and run the ETL Manager backend locally.
 2.  **Install Dependencies**:
     Sync the environment using `uv`:
     ```bash
-    uv sync
+    uv sync / uv sync --native-tls
     ```
 
 ## Running the Server
